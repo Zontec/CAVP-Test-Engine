@@ -1,0 +1,38 @@
+.PHONY: static shared clean
+
+OUT := $(BUILD_NAME)
+SRC_DIR := $(TARGET)
+
+# Target test library
+INPUTS ?= mbcrypt.a
+
+-include $(SRC_DIR)/Makefile.tools
+
+# Compile flags
+CPPFLAGS := -Wall -fPIC -std=c++17
+CFLAGS := -Wall -fPIC -std=c17
+ASFLAGS := -Wall -fPIC
+LDFLAGS := -fPIC
+
+# Build objects
+OBJS = $(SRC_DIR)/api.o
+ 
+
+%.o:%.cpp
+	$(CPP) $(CPPFLAGS) -c $< -o $@ 
+
+%.o:%.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+%.o:%.s
+	$(AS) $(ASFLAGS) -c $< -o $@
+
+
+static: clean $(OBJS)
+	$(AR) rcs $(OUT).a $(OBJS) $(TARGET)/$(INPUTS)
+
+shared: clean $(OBJS)
+	$(LD) $(LDFLAGS) -shared $(OBJS) $(TARGET)/$(INPUTS) -o $(OUT).so
+
+clean:
+	rm -f $(SRC_DIR)/*.o

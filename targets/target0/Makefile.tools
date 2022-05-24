@@ -1,0 +1,7 @@
+### Build tools 
+
+CC := gcc
+AS := as
+AR := ar
+CPP := g++
+LD := ld
